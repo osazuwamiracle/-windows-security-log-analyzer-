@@ -1,0 +1,10 @@
+# Get last 50 failed logins - Brute Force Check
+Get-EventLog -LogName Security -InstanceId 4625 -Newest 50 | 
+Select-Object TimeGenerated, Message |
+Format-Table -AutoSize
+
+Write-Host "Checking for brute-force pattern..."
+$failed = (Get-EventLog -LogName Security -InstanceId 4625 -Newest 100).Count
+Write-Host "Total Failed Logins (last 100 events): $failed"
+if ($failed -gt 20) { Write-Host "WARNING: Possible brute-force attack - Investigate!" -ForegroundColor Red }
+else { Write-Host "Normal activity" -ForegroundColor Green }
